@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 if (process.argv.length < 3) {
   console.log("give password as argument");
   process.exit(1);
-} else if (process.argv.length < 5) {
+} else if (process.argv.length > 4 && process.argv.length < 5) {
   console.log("give contact name and number as argument");
   process.exit(1);
 }
@@ -29,7 +29,16 @@ const contact = new Contact({
   number: contactNumber,
 });
 
-contact.save().then((result) => {
-  console.log(`added ${result.name} to phonebook`);
-  mongoose.connection.close();
-});
+if (process.argv.length === 3) {
+  Contact.find({}).then((result) => {
+    result.forEach((contact) => {
+      console.log(contact);
+    });
+    mongoose.connection.close();
+  });
+} else if (process.argv.length === 5) {
+  contact.save().then((result) => {
+    console.log(`added ${result.name} to phonebook`);
+    mongoose.connection.close();
+  });
+}
