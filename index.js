@@ -41,19 +41,31 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Contact.findById({ _id: request.params.id }).then((contact) => {
-    console.log("contact by id:", contact);
-    response.json(contact);
-  });
+app.get("/api/persons/:id", (request, response, next) => {
+  Contact.findById({ _id: request.params.id })
+    .then((contact) => {
+      if (contact) {
+        response.json(contact);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
 });
 
-// DELETE
+// DELETE;
 // app.delete("/api/persons/:id", (request, response) => {
 //   const id = Number(request.params.id);
 //   persons = persons.filter((person) => person.id !== id);
 //   response.status(204).end();
 // });
+
+app.delete("/api/persons/:id", (request, response) => {
+  Contact.findByIdAndDelete({ _id: request.params.id }).then((contactDeleted) => {
+    console.log("deleted:", contactDeleted);
+    response.json(contactDeleted);
+  });
+});
 
 // POST
 app.post("/api/persons", (request, response) => {
@@ -66,35 +78,6 @@ app.post("/api/persons", (request, response) => {
     response.json(contactAdded);
   });
 });
-
-// // POST
-// app.post("/api/persons", (request, response) => {
-//   const body = request.body;
-
-//   const person = {
-//     id: getRandomInt(0, 999),
-//     name: body.name,
-//     number: body.number,
-//   };
-
-//   const names = persons.map((person) => person.name);
-
-//   if (!body.name || !body.number) {
-//     console.log(`error: Content missing`);
-//     return response.status(400).json({
-//       error: "Content missing",
-//     });
-//   } else if (names.includes(person.name)) {
-//     console.log(`error: ${person.name} is already in the phonebook`);
-//     return response.status(400).json({
-//       error: `${person.name} is already in the phonebook`,
-//     });
-//   }
-
-//   persons = persons.concat(person);
-//   response.json(person);
-//   console.log(`${person.name} added`);
-// });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
