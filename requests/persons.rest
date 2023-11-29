@@ -4,12 +4,14 @@ GET http://localhost:3001/info HTTP/1.1
 ###
 GET http://localhost:3001/api/persons HTTP/1.1
 ###
+GET http://localhost:3001/api/persons/655f75453dc83deff5ee2e82 HTTP/1.1
+###
 DELETE http://localhost:3001/api/persons/51 HTTP/1.1
 ###
 POST http://localhost:3001/api/persons HTTP/1.1
 Content-Type: application/json
 
 {
-   "name": "Ettogrammo",
-   "number": "12-3534634"
+   "name": "test with mongo",
+   "number": "1111"
 }
