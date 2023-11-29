@@ -10,31 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("dev"));
 
-//Hardcoded array of persons in the phonebook
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
-// // Morgan token and conditional setup
+// // Morgan token and conditional setup NOT WORKING -> PREVENTS GET AND POST REQUESTS
 // morgan.token("data", (req) => JSON.stringify(req.body));
 
 // app.use((req, res, next) => {
@@ -45,6 +21,9 @@ let persons = [
 //   }
 //   next();
 // });
+
+//Hardcoded array of persons in the phonebook
+let persons = [];
 
 // GET;
 app.get("/", (request, response) => {
@@ -58,7 +37,6 @@ app.get("/info", (request, response) => {
 
 app.get("/api/persons", (request, response) => {
   Contact.find({}).then((contacts) => {
-    console.log("contacts logged", contacts);
     response.json(contacts);
   });
 });
@@ -66,7 +44,6 @@ app.get("/api/persons", (request, response) => {
 app.get("/api/persons/:id", (request, response) => {
   Contact.findById({ _id: request.params.id }).then((contact) => {
     console.log("contact by id:", contact);
-    console.log("id requested:", request.param.id);
     response.json(contact);
   });
 });
@@ -77,13 +54,6 @@ app.get("/api/persons/:id", (request, response) => {
 //   persons = persons.filter((person) => person.id !== id);
 //   response.status(204).end();
 // });
-
-// // Function for generating person.id
-// function getRandomInt(min, max) {
-//   min = Math.ceil(min);
-//   max = Math.floor(max);
-//   return Math.floor(Math.random() * (max - min) + min);
-// }
 
 // POST
 app.post("/api/persons", (request, response) => {

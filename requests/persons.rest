@@ -12,6 +12,6 @@ POST http://localhost:3001/api/persons HTTP/1.1
 Content-Type: application/json
 
 {
-   "name": "test with mongo",
+   "name": "test5",
    "number": "1111"
 }
