@@ -6,6 +6,15 @@ const morgan = require("morgan");
 
 const Contact = require("./models/contact");
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("dev"));
@@ -50,16 +59,14 @@ app.get("/api/persons/:id", (request, response, next) => {
         response.status(404).end();
       }
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      // console.log(error);
+      // response.status(400).send({ error: "malformatted id" });
+      next(error);
+    });
 });
 
 // DELETE;
-// app.delete("/api/persons/:id", (request, response) => {
-//   const id = Number(request.params.id);
-//   persons = persons.filter((person) => person.id !== id);
-//   response.status(204).end();
-// });
-
 app.delete("/api/persons/:id", (request, response) => {
   Contact.findByIdAndDelete({ _id: request.params.id }).then((contactDeleted) => {
     console.log("deleted:", contactDeleted);
@@ -78,6 +85,8 @@ app.post("/api/persons", (request, response) => {
     response.json(contactAdded);
   });
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
