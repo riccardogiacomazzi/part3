@@ -60,8 +60,6 @@ app.get("/api/persons/:id", (request, response, next) => {
       }
     })
     .catch((error) => {
-      // console.log(error);
-      // response.status(400).send({ error: "malformatted id" });
       next(error);
     });
 });
@@ -86,6 +84,15 @@ app.post("/api/persons", (request, response) => {
   });
 });
 
+// PUT
+app.put("/api/persons/:id", (request, response) => {
+  Contact.findByIdAndUpdate({ _id: request.params.id }, { number: request.body.number }).then((contactUpdated) => {
+    console.log("updated contact:", contactUpdated);
+    response.json(contactUpdated);
+  });
+});
+
+//error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
