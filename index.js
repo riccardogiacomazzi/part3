@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const morgan = require("morgan");
 
 const Contact = require("./models/contact");
 
@@ -22,18 +21,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("dev"));
 
-// // Morgan token and conditional setup NOT WORKING -> PREVENTS GET AND POST REQUESTS
-// morgan.token("data", (req) => JSON.stringify(req.body));
-
-// app.use((req, res, next) => {
-//   if (req.method === "POST") {
-//     morgan(":method :url :status :res[content-length] :response-time ms :data")(req, res, next);
-//   } else {
-//     morgan("tiny")(req, res, next);
-//   }
-//   next();
-// });
-
 //Hardcoded array of persons in the phonebook
 let persons = [];
 
@@ -44,7 +31,10 @@ app.get("/", (request, response) => {
 
 app.get("/info", (request, response) => {
   utcTime = new Date(Date.now());
-  response.send(`<p>Phonebook has info for ${persons.length} people</p> <p>${utcTime}</p>`);
+  Contact.countDocuments({}).then((count) => {
+    let info = `<p>Phonebook has info for ${count} people</p> <p>${utcTime}</p>`;
+    response.send(info);
+  });
 });
 
 app.get("/api/persons", (request, response) => {
@@ -70,7 +60,7 @@ app.get("/api/persons/:id", (request, response, next) => {
 // DELETE;
 app.delete("/api/persons/:id", (request, response) => {
   Contact.findByIdAndDelete({ _id: request.params.id }).then((contactDeleted) => {
-    console.log("deleted:", contactDeleted);
+    console.log("contact deleted:", contactDeleted);
     response.json(contactDeleted);
   });
 });
@@ -84,7 +74,7 @@ app.post("/api/persons", (request, response, next) => {
   contact
     .save()
     .then((contactAdded) => {
-      console.log(`added ${contactAdded.name} to phonebook`);
+      console.log("contact added:", contactAdded);
       response.json(contactAdded);
     })
     .catch((error) => next(error));
