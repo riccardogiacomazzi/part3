@@ -29,9 +29,8 @@ const contactSchema = new mongoose.Schema({
         const phoneNumberRegex = /^\d{2,3}-\d+$/;
         return phoneNumberRegex.test(value);
       },
-      message: "Invalid phone number format. Please use the format XX-XXXXXXX or XXX-XXXXXXX.",
+      message: "Please use the format XX-XXXXXXX or XXX-XXXXXXX. The number must be composed of digits only.",
     },
-
     required: [true, "is a required field"],
   },
 });
