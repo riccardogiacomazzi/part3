@@ -16,8 +16,15 @@ mongoose
   });
 
 const contactSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    minlength: [3, "must be at least 3 characters long"],
+    required: [true, "is a required field"],
+  },
+  number: {
+    type: String,
+    required: [true, "is a required field"],
+  },
 });
 
 contactSchema.set("toJSON", {

@@ -6,11 +6,14 @@ const morgan = require("morgan");
 
 const Contact = require("./models/contact");
 
+//Error handler setup
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };
@@ -73,15 +76,18 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 // POST
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const contact = new Contact({
     name: request.body.name,
     number: request.body.number,
   });
-  contact.save().then((contactAdded) => {
-    console.log(`added ${contactAdded.name} to phonebook`);
-    response.json(contactAdded);
-  });
+  contact
+    .save()
+    .then((contactAdded) => {
+      console.log(`added ${contactAdded.name} to phonebook`);
+      response.json(contactAdded);
+    })
+    .catch((error) => next(error));
 });
 
 // PUT
@@ -92,7 +98,6 @@ app.put("/api/persons/:id", (request, response) => {
   });
 });
 
-//error handler
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
