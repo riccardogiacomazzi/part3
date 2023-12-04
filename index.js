@@ -21,16 +21,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("dev"));
 
-//Hardcoded array of persons in the phonebook
-let persons = [];
-
 // GET;
 app.get("/", (request, response) => {
   response.send("<h1>Phonebook backend</h1>");
 });
 
 app.get("/info", (request, response) => {
-  utcTime = new Date(Date.now());
+  const utcTime = new Date(Date.now());
   Contact.countDocuments({}).then((count) => {
     let info = `<p>Phonebook has info for ${count} people</p> <p>${utcTime}</p>`;
     response.send(info);
