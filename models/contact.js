@@ -23,6 +23,15 @@ const contactSchema = new mongoose.Schema({
   },
   number: {
     type: String,
+    minlength: [8, "must be at least 8 digits long"],
+    validate: {
+      validator: function (value) {
+        const phoneNumberRegex = /^\d{2,3}-\d+$/;
+        return phoneNumberRegex.test(value);
+      },
+      message: "Invalid phone number format. Please use the format XX-XXXXXXX or XXX-XXXXXXX.",
+    },
+
     required: [true, "is a required field"],
   },
 });
