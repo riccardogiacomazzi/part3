@@ -1,0 +1,7 @@
+node_modules
+frontend
+fly.toml
+Dockerfile
+.dockerignore
+build/
+.env
